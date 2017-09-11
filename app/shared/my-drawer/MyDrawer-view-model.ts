@@ -23,6 +23,13 @@ export class MyDrawerViewModel extends Observable {
                 isSelected: selectedPage === "Home"
             },
             {
+                title: "Login",
+                name: "login",
+                route: "login/login-page",
+                icon: "\uf090",
+                isSelected: selectedPage === "Login"
+            },
+            {
                 title: "News",
                 name: "browse",
                 route: "browse/browse-page",
