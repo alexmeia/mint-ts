@@ -57,10 +57,7 @@
         Always wrap content in a layout component.
         -->
         <nsDrawer:RadSideDrawer.mainContent>
-            <GridLayout class="page-content">
-                <Label class="page-icon fa" text="&#xf090;"></Label>
-                <Label text="Esegui il login"></Label>
-            </GridLayout>
+            <web-view id="webView" src="http://mail.google.com"></web-view>
         </nsDrawer:RadSideDrawer.mainContent>
     </nsDrawer:RadSideDrawer>
 </Page>
