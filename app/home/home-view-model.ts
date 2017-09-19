@@ -8,7 +8,6 @@ export class HomeViewModel extends Observable {
         super();
 
         let authority = "http://keycloak-dev.phoops.it:9876/auth/realms/mint/protocol/openid-connect/auth";
-        
         let oidcParams = {
             client_id: "vuejs-sample-client",
             redirect_uri: "http://localhost:8080/static/callback",
