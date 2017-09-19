@@ -2,8 +2,11 @@ import { EventData } from "data/observable";
 import { RadSideDrawer } from "nativescript-telerik-ui/sidedrawer";
 import { topmost } from "ui/frame";
 import { NavigatedData, Page } from "ui/page";
+import * as Oidc from "oidc-client";
 
 import { LoginViewModel } from "./login-view-model";
+
+let url :string = "http://www.google.it";
 
 /* ***********************************************************
 * Use the "onNavigatingTo" handler to initialize the page binding context.
@@ -14,12 +17,14 @@ export function onNavigatingTo(args: NavigatedData) {
     * Skipping the re-initialization on back navigation means the user will see the
     * page in the same data state that he left it in before navigating.
     *************************************************************/
+
     if (args.isBackNavigation) {
         return;
     }
 
     const page = <Page>args.object;
     page.bindingContext = new LoginViewModel();
+
 }
 
 /* ***********************************************************

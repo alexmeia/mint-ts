@@ -57,7 +57,7 @@
         Always wrap content in a layout component.
         -->
         <nsDrawer:RadSideDrawer.mainContent>
-            <web-view id="webView" src="http://mail.google.com"></web-view>
+            <web-view id="webView" src="{{ url }}"></web-view>
         </nsDrawer:RadSideDrawer.mainContent>
     </nsDrawer:RadSideDrawer>
 </Page>

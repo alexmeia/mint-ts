@@ -2,6 +2,7 @@ import { EventData } from "data/observable";
 import { RadSideDrawer } from "nativescript-telerik-ui/sidedrawer";
 import { topmost } from "ui/frame";
 import { NavigatedData, Page } from "ui/page";
+import * as utils from "utils/utils";
 
 import { HomeViewModel } from "./home-view-model";
 
@@ -30,4 +31,9 @@ export function onNavigatingTo(args: NavigatedData) {
 export function onDrawerButtonTap(args: EventData) {
     const sideDrawer = <RadSideDrawer>topmost().getViewById("sideDrawer");
     sideDrawer.showDrawer();
+}
+
+export function openLoginPage() {
+    let homeViewModel: HomeViewModel = new HomeViewModel();
+    utils.openUrl(homeViewModel.get("keycloakUrl"));
 }

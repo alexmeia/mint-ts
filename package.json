@@ -13,8 +13,10 @@
     "lint": "tslint \"app/**/*.ts\""
   },
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "nativescript-telerik-ui": "3.0.4",
     "nativescript-theme-core": "1.0.4",
+    "oidc-client": "^1.3.0",
     "tns-core-modules": "3.1.1"
   },
   "devDependencies": {
