@@ -1,16 +1,18 @@
 import { Observable } from "data/observable";
+import { handleOpenURL, AppURL } from 'nativescript-urlhandler';
 
 export class HomeViewModel extends Observable {
 
     keycloakUrl: string;
+    private _appURL: string;
 
     constructor() {
         super();
 
         let authority = "http://keycloak-dev.phoops.it:9876/auth/realms/mint/protocol/openid-connect/auth";
         let oidcParams = {
-            client_id: "vuejs-sample-client",
-            redirect_uri: "http://localhost:8080/static/callback",
+            client_id: "nativescript-sample-client",
+            redirect_uri: "mint://test",
             response_type: "id_token token",
             scope: "openid profile all_claims",
             state: "56026239d44b4e678a4b56408da657e9", // TODO:  retrieve from request object
@@ -21,6 +23,16 @@ export class HomeViewModel extends Observable {
         console.log(oidcUrl);
         
         this.keycloakUrl = oidcUrl;
+
+        handleOpenURL((appURL: AppURL) => {
+            this._appURL = appURL.toString();
+        });
+
+        console.log(this._appURL);
+    }
+
+    get appURL(): string {
+        return this._appURL;
     }
 
     buildOidcUrl(authority: string, params: any): string {

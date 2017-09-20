@@ -57,11 +57,12 @@
         Always wrap content in a layout component.
         -->
         <nsDrawer:RadSideDrawer.mainContent>
-            <GridLayout class="page-content">
-                <Label class="page-icon fa" text="&#xf015;"></Label>
-                <Label class="page-placeholder" text="<!-- Page content goes here -->"></Label>
-                <Button class="loginButton" text="Login with OpenId Connect" tap="openLoginPage" />
-            </GridLayout>
+            <StackLayout class="page-content">
+                <Label text="Login with OpenId Connect (open login page in device browser)" />
+                <Button class="btn btn-primary" text="Login with OpenId Connect" tap="openLoginPage" />
+                <Label text="app URL:" class="h1 text-center"/>
+                <Label text="{{ appURL }}" class="h2 text-center" textWrap="true"/>
+            </StackLayout>
         </nsDrawer:RadSideDrawer.mainContent>
     </nsDrawer:RadSideDrawer>
 </Page>
