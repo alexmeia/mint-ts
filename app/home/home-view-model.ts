@@ -30,6 +30,7 @@ export class HomeViewModel extends Observable {
             console.log("App URL: " + this.callbackUrl);
 
             // start signIn process with Oidc Client
+            
 
 
         });
