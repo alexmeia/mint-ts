@@ -9,12 +9,7 @@ import { handleOpenURL, AppURL } from 'nativescript-urlhandler';
 import { HomeViewModel } from "./home/home-view-model";
 
 
-handleOpenURL((appURL: AppURL) => {
-    console.log("App URL:" + appURL.toString());
-});
 app.start({ moduleName: "home/home-page" });
-
-
 
 /*
 Do not place any code after the application has been started as it will not

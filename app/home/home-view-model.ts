@@ -5,7 +5,7 @@ import { handleOpenURL, AppURL } from 'nativescript-urlhandler';
 export class HomeViewModel extends Observable {
 
     keycloakUrl: string;
-    private _appURL: string;
+    callbackUrl: string;
 
     constructor() {
         super();
@@ -13,7 +13,7 @@ export class HomeViewModel extends Observable {
         let authority = "http://keycloak-dev.phoops.it:9876/auth/realms/mint/protocol/openid-connect/auth";
         let oidcParams = {
             client_id: "nativescript-sample-client",
-            redirect_uri: "mint://test",
+            redirect_uri: "it.phoops.mint://test",
             response_type: "id_token token",
             scope: "openid profile all_claims",
             state: "56026239d44b4e678a4b56408da657e9", // TODO:  retrieve from request object
@@ -21,18 +21,16 @@ export class HomeViewModel extends Observable {
         };
 
         let oidcUrl = this.buildOidcUrl(authority, oidcParams);
-        console.log(oidcUrl);
-        
+        console.log(oidcUrl);     
         this.keycloakUrl = oidcUrl;
 
-    }
+        handleOpenURL((appURL: AppURL) => {
+            this.callbackUrl = appURL.toString();
+            this.set("testUrl", appURL.toString());
+            console.log("App URL: " + this.callbackUrl);
+        });
 
-    get appURL(): string {
-        return this._appURL;
-    }
-
-    set appURL(appUrl: string) {
-        this._appURL = appUrl;
+        this.set("kcurl", this.buildOidcUrl(authority, oidcParams));
     }
 
     buildOidcUrl(authority: string, params: any): string {
