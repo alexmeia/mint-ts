@@ -8,9 +8,7 @@ import "./bundle-config";
 import { handleOpenURL, AppURL } from 'nativescript-urlhandler';
 
 app.start({ moduleName: "home/home-page" });
-handleOpenURL((appURL: AppURL) => {
-    console.log("App URL:" + appURL);
-});
+
 
 
 /*
