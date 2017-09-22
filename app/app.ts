@@ -6,11 +6,14 @@ purpose of the file is to pass control to the app’s first module.
 import * as app from "application";
 import "./bundle-config";
 import { handleOpenURL, AppURL } from 'nativescript-urlhandler';
+import { HomeViewModel } from "./home/home-view-model";
 
-app.start({ moduleName: "home/home-page" });
+
 handleOpenURL((appURL: AppURL) => {
-    console.log("App URL:" + appURL);
+    console.log("App URL:" + appURL.toString());
 });
+app.start({ moduleName: "home/home-page" });
+
 
 
 /*

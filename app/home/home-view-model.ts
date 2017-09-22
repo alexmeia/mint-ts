@@ -1,6 +1,7 @@
 import { Observable } from "data/observable";
 import { handleOpenURL, AppURL } from 'nativescript-urlhandler';
 
+
 export class HomeViewModel extends Observable {
 
     keycloakUrl: string;
@@ -24,15 +25,14 @@ export class HomeViewModel extends Observable {
         
         this.keycloakUrl = oidcUrl;
 
-        handleOpenURL((appURL: AppURL) => {
-            this._appURL = appURL.toString();
-        });
-
-        console.log(this._appURL);
     }
 
     get appURL(): string {
         return this._appURL;
+    }
+
+    set appURL(appUrl: string) {
+        this._appURL = appUrl;
     }
 
     buildOidcUrl(authority: string, params: any): string {
