@@ -47,7 +47,7 @@
 	<array>
     	<dict>
         	<key>CFBundleURLName</key>
-        	<string>it.phoops.mint</string>
+        	<string>test</string>
     	</dict>
     	<dict>
         	<key>CFBundleURLSchemes</key>
