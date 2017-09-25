@@ -36,4 +36,7 @@ export function onDrawerButtonTap(args: EventData) {
 export function openLoginPage() {
     let homeViewModel: HomeViewModel = new HomeViewModel();
     utils.openUrl(homeViewModel.get("keycloakUrl"));
+
+    // TODO: import OidcClient and OidcClient.createSigninRequest
+    // then openUrl
 }
