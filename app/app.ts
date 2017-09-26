@@ -8,9 +8,9 @@ import "./bundle-config";
 import { handleOpenURL, AppURL } from "nativescript-urlhandler";
 
 handleOpenURL((appURL: AppURL) => {
-    this.callbackUrl = appURL.toString();
-    this.set("testUrl", appURL.toString());
-    console.log("App URL: " + this.callbackUrl);
+    // this.callbackUrl = appURL.toString();
+    // this.set("testUrl", appURL.toString());
+    // console.log("App URL: " + this.callbackUrl);
 
     // start signIn process with Oidc Client
 });
