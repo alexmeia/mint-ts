@@ -2,50 +2,49 @@ import { Observable } from "data/observable";
 import { handleOpenURL, AppURL } from "nativescript-urlhandler";
 import { OidcClient, UserManager } from "oidc-client";
 
+import * as http  from "http";
+
 
 export class HomeViewModel extends Observable {
 
     keycloakUrl: string;
     callbackUrl: string;
+    accessTokenBody: any;
 
     constructor() {
         super();
-
-        let authority = "http://keycloak-dev.phoops.it:9876/auth/realms/mint/protocol/openid-connect/auth";
-        let oidcParams = {
-            client_id: "nativescript-sample-client",
-            redirect_uri: "it.phoops.mint://test",
-            response_type: "id_token token",
-            scope: "openid profile all_claims",
-            state: "56026239d44b4e678a4b56408da657e9", // TODO: retrieve from request object
-            nonce: "0e36d3cf3e954b798d7233766b257f73" // TODO: retrieve from request object
-        };
-
-        let oidcUrl = this.buildOidcUrl(authority, oidcParams);
-        console.log(oidcUrl);     
-        this.keycloakUrl = oidcUrl;
 
         handleOpenURL((appURL: AppURL) => {
             this.callbackUrl = appURL.toString();
             this.set("testUrl", appURL.toString());
             console.log("App URL: " + this.callbackUrl);
 
-            // start signIn process with Oidc Client
-            
+            // Read Authorization code parameter from callback url
+            let authorizationCode = this.callbackUrl.substr(this.callbackUrl.indexOf("code=") + 5, this.callbackUrl.length);
+            console.log(authorizationCode);
 
+            let data: string = "grant_type=authorization_code&client_id=nativescript-sample-client&client_secret=1ca49903-3d90-4d3c-912e-910cbb61cf77&code=" 
+                                    + authorizationCode + "&redirect_uri=it.phoops.mint://test" 
+        
+            // Exchange the Authorization Code for an Access Token
+            let options = { 
+                method: "POST",
+                url: 'http://localhost:9876/auth/realms/mint/protocol/openid-connect/token',
+                headers: { "content-type": "application/x-www-form-urlencoded" },
+                content: data
+            };
+          
+            http.request(options).then((response) => {
+                this.set("tokenType", response.content.toJSON().token_type);
+                this.set("expiresIn", response.content.toJSON().expires_in);
+                //this.accessTokenBody = response.content.toJSON();
+                console.log(response.content.toJSON());
+            }, function (e) {
+                console.log("Error occurred: " + e);
+            });
 
         });
 
-        this.set("kcurl", this.buildOidcUrl(authority, oidcParams));
     }
 
-    buildOidcUrl(authority: string, params: any): string {
-        let oidcUrl = authority + "?";
-        for (let key in params) {
-            if (params.hasOwnProperty(key)) {
-                oidcUrl += key + "=" + params[key] + "&";
-            }
-        }
-        return encodeURI(oidcUrl.slice(0, -1));
-    }
 }

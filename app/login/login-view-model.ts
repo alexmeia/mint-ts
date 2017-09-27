@@ -1,4 +1,5 @@
 import { Observable } from "data/observable";
+import { KeycloakUtils } from "../utils/keycloak-utils";
 
 export class LoginViewModel extends Observable {
 
@@ -18,20 +19,10 @@ export class LoginViewModel extends Observable {
             nonce: "0e36d3cf3e954b798d7233766b257f73"
         };
 
-        let oidcUrl = this.buildOidcUrl(authority, oidcParams);
+        let oidcUrl = KeycloakUtils.buildOidcUrl(authority, oidcParams);
         console.log(oidcUrl);
         
         this.url = oidcUrl;
-    }
-
-    buildOidcUrl(authority: string, params: any): string {
-        let oidcUrl = authority + "?";
-        for (let key in params) {
-            if (params.hasOwnProperty(key) && key != "authority") {
-                oidcUrl += key + "=" + params[key] + "&";
-            }
-        }
-        return encodeURI(oidcUrl.slice(0, -1));
     }
 
 }

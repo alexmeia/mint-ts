@@ -5,6 +5,7 @@ import { NavigatedData, Page } from "ui/page";
 import * as utils from "utils/utils";
 
 import { HomeViewModel } from "./home-view-model";
+import { KeycloakUtils } from "../utils/keycloak-utils";
 
 /* ***********************************************************
 * Use the "onNavigatingTo" handler to initialize the page binding context.
@@ -34,8 +35,18 @@ export function onDrawerButtonTap(args: EventData) {
 }
 
 export function openLoginPage() {
-    let homeViewModel: HomeViewModel = new HomeViewModel();
-    utils.openUrl(homeViewModel.get("keycloakUrl"));
+
+    let authority = "http://localhost:9876/auth/realms/mint/protocol/openid-connect/auth";
+    let oidcParams = {
+        client_id: "nativescript-sample-client",
+        redirect_uri: "it.phoops.mint://test",
+        response_type: "code",
+        scope: "openid profile all_claims",
+        state: "56026239d44b4e678a4b56408da657e9", // TODO: retrieve from request object
+        nonce: "0e36d3cf3e954b798d7233766b257f73" // TODO: retrieve from request object
+    };
+
+    utils.openUrl(KeycloakUtils.buildOidcUrl(authority, oidcParams));
 
     // TODO: import OidcClient and OidcClient.createSigninRequest
     // then openUrl
