@@ -1,8 +1,8 @@
 import { Observable } from "data/observable";
 import { handleOpenURL, AppURL } from "nativescript-urlhandler";
-import { OidcClient, UserManager } from "oidc-client";
-
+import * as Constants from "../utils/constants";
 import * as http  from "http";
+import { Utils } from "../utils/utils";
 
 
 
@@ -25,15 +25,24 @@ export class HomeViewModel extends Observable {
 
             console.log(code);
 
-            let data: string = "grant_type=authorization_code&client_id=nativescript-sample-client&client_secret=22c52bfc-c933-4055-8b88-cd99c2064906&code=" 
-                                    + code + "&redirect_uri=it.phoops.mint://test" 
+            // Build queryString to request access token
+
+            let params: any = {
+                grant_type: "authorization_code",
+                client_id: Constants.KEYCLOAK_CLIENT_ID,
+                client_secret: Constants.KEYCLOAK_CLIENT_SECRET,
+                code: code,
+                redirect_uri: Constants.KEYCLOAK_REDIRECT_URL
+            }
+
+            let data: string = Utils.buildQueryString(params);
 
             this.set("authCode", code);
         
             // Exchange the Authorization Code for an Access Token
             let options = { 
                 method: "POST",
-                url: 'http://keycloak-dev.phoops.it:9876/auth/realms/mint/protocol/openid-connect/token',
+                url: Constants.KEYCLOAK_ACCESS_URL,
                 headers: { "content-type": "application/x-www-form-urlencoded" }, // Keycloak needs this content type
                 content: data
             };

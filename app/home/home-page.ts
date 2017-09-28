@@ -6,6 +6,8 @@ import * as utils from "utils/utils";
 
 import { HomeViewModel } from "./home-view-model";
 import { KeycloakUtils } from "../utils/keycloak-utils";
+import { Utils } from "../utils/utils";
+import * as Constants from "../utils/constants";
 
 /* ***********************************************************
 * Use the "onNavigatingTo" handler to initialize the page binding context.
@@ -36,17 +38,24 @@ export function onDrawerButtonTap(args: EventData) {
 
 export function openLoginPage() {
 
-    let authority = "http://keycloak-dev.phoops.it:9876/auth/realms/mint/protocol/openid-connect/auth";
+    let authority = Constants.KEYCLOAK_AUTH_URL;
+
+    let state = Utils.guid();
+    let nonce = Utils.guid();
+
+    // TODO: store state and nonce
+
     let oidcParams = {
-        client_id: "nativescript-sample-client",
-        redirect_uri: "it.phoops.mint://test",
+        client_id: Constants.KEYCLOAK_CLIENT_ID,
+        redirect_uri: Constants.KEYCLOAK_REDIRECT_URL,
         response_type: "code",
         scope: "openid profile all_claims",
-        state: "56026239d44b4e678a4b56408da657e9", // TODO: retrieve from request object
-        nonce: "0e36d3cf3e954b798d7233766b257f73" // TODO: retrieve from request object
+        state: state,
+        nonce: nonce
     };
 
-    utils.openUrl(KeycloakUtils.buildOidcUrl(authority, oidcParams));
+    //utils.openUrl(KeycloakUtils.buildOidcUrl(authority, oidcParams));
+    utils.openUrl(authority + "?" + Utils.buildQueryString(oidcParams))
 
     // TODO: import OidcClient and OidcClient.createSigninRequest
     // then openUrl
