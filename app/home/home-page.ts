@@ -36,7 +36,7 @@ export function onDrawerButtonTap(args: EventData) {
 
 export function openLoginPage() {
 
-    let authority = "http://localhost:9876/auth/realms/mint/protocol/openid-connect/auth";
+    let authority = "http://keycloak-dev.phoops.it:9876/auth/realms/mint/protocol/openid-connect/auth";
     let oidcParams = {
         client_id: "nativescript-sample-client",
         redirect_uri: "it.phoops.mint://test",
