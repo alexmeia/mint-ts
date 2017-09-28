@@ -14,6 +14,7 @@ handleOpenURL((appURL: AppURL) => {
 
     // start signIn process with Oidc Client
 });
+
 app.start({ moduleName: "home/home-page" });
 
 
