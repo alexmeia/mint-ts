@@ -63,6 +63,7 @@
                 <Label text="{{ 'Test: ' + testUrl }}" textWrap="false" />
                 <Label text="{{ 'Access token type: ' + tokenType }}" textWrap="true" />
                 <Label text="{{ 'Expires in: ' + expiresIn }}" textWrap="true" />
+                <Label text="{{ 'Access code: ' + authCode }}" textWrap="true" />
             </StackLayout>
         </nsDrawer:RadSideDrawer.mainContent>
     </nsDrawer:RadSideDrawer>

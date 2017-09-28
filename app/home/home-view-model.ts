@@ -5,6 +5,7 @@ import { OidcClient, UserManager } from "oidc-client";
 import * as http  from "http";
 
 
+
 export class HomeViewModel extends Observable {
 
     keycloakUrl: string;
@@ -15,22 +16,25 @@ export class HomeViewModel extends Observable {
         super();
 
         handleOpenURL((appURL: AppURL) => {
+
+             // Read Authorization code parameter from callback url
+            let code = appURL.params.get("code");
             this.callbackUrl = appURL.toString();
             this.set("testUrl", appURL.toString());
             console.log("App URL: " + this.callbackUrl);
 
-            // Read Authorization code parameter from callback url
-            let authorizationCode = this.callbackUrl.substr(this.callbackUrl.indexOf("code=") + 5, this.callbackUrl.length);
-            console.log(authorizationCode);
+            console.log(code);
 
-            let data: string = "grant_type=authorization_code&client_id=nativescript-sample-client&client_secret=1ca49903-3d90-4d3c-912e-910cbb61cf77&code=" 
-                                    + authorizationCode + "&redirect_uri=it.phoops.mint://test" 
+            let data: string = "grant_type=authorization_code&client_id=nativescript-sample-client&client_secret=22c52bfc-c933-4055-8b88-cd99c2064906&code=" 
+                                    + code + "&redirect_uri=it.phoops.mint://test" 
+
+            this.set("authCode", code);
         
             // Exchange the Authorization Code for an Access Token
             let options = { 
                 method: "POST",
-                url: 'http://localhost:9876/auth/realms/mint/protocol/openid-connect/token',
-                headers: { "content-type": "application/x-www-form-urlencoded" },
+                url: 'http://keycloak-dev.phoops.it:9876/auth/realms/mint/protocol/openid-connect/token',
+                headers: { "content-type": "application/x-www-form-urlencoded" }, // Keycloak needs this content type
                 content: data
             };
           
