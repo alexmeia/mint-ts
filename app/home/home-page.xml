@@ -60,6 +60,7 @@
             <StackLayout class="page-content">
                 <Label text="Login with OpenId Connect (open login page in device browser)" />
                 <Button class="btn btn-primary" text="Login with OpenId Connect" tap="openLoginPage" />
+                <Button class="btn btn-primary" text="Get access token" tap="getAccessToken" />
                 <Label text="{{ 'Test: ' + testUrl }}" textWrap="false" />
                 <Label text="{{ 'Access token type: ' + tokenType }}" textWrap="true" />
                 <Label text="{{ 'Expires in: ' + expiresIn }}" textWrap="true" />

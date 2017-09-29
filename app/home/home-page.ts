@@ -9,6 +9,9 @@ import { KeycloakUtils } from "../utils/keycloak-utils";
 import { Utils } from "../utils/utils";
 import * as Constants from "../utils/constants";
 
+
+let keycloakUtils: KeycloakUtils = new KeycloakUtils(); // Does is work?
+
 /* ***********************************************************
 * Use the "onNavigatingTo" handler to initialize the page binding context.
 *************************************************************/
@@ -37,26 +40,14 @@ export function onDrawerButtonTap(args: EventData) {
 }
 
 export function openLoginPage() {
+    keycloakUtils.openLoginPage();
+}
 
-    let authority = Constants.KEYCLOAK_AUTH_URL;
-
-    let state = Utils.guid();
-    let nonce = Utils.guid();
-
-    // TODO: store state and nonce
-
-    let oidcParams = {
-        client_id: Constants.KEYCLOAK_CLIENT_ID,
-        redirect_uri: Constants.KEYCLOAK_REDIRECT_URL,
-        response_type: "code",
-        scope: "openid profile all_claims",
-        state: state,
-        nonce: nonce
-    };
-
-    //utils.openUrl(KeycloakUtils.buildOidcUrl(authority, oidcParams));
-    utils.openUrl(authority + "?" + Utils.buildQueryString(oidcParams))
-
-    // TODO: import OidcClient and OidcClient.createSigninRequest
-    // then openUrl
+export function getAccessToken() {
+    //let keycloakUtils: KeycloakUtils = new KeycloakUtils();
+    let accessToken: string = keycloakUtils.getAccesToken();
+    console.log("Access Token: ", accessToken);
+    if (accessToken === null) {
+        keycloakUtils.openLoginPage();
+    }
 }
