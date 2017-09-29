@@ -29,7 +29,17 @@ export class KeycloakUtils {
         return success;
     }
 
-    public getAccesToken(): Promise<string> {
+    public clearSecureStorage() {
+        this.secureStorage.removeAll().then(removed => {
+            if (removed) {
+                console.log("Removed all data from secure storage.")
+            } else {
+                console.error("Error in clearing secure storage.")
+            }
+        });
+    }
+
+    public getAccesToken(): Promise<any> {
 
         let that = this;
         return new Promise(function(succeed, fail) {
@@ -39,7 +49,7 @@ export class KeycloakUtils {
                 key: "access_token"
             });
 
-            if (accessToken === null) {
+            if (!accessToken) {
                 // new login is needed
                 fail("No token in secure storage.");
             } else if (that.isTokenNotExpired(accessToken)) {
@@ -51,14 +61,7 @@ export class KeycloakUtils {
                 if (that.isTokenNotExpired(refreshToken)) {
                     // get new access token and return it
                     //let responseObj = this.getUpdatedAccesData(refreshToken);
-
-                    that.getUpdatedAccesData(refreshToken).then(responseObj => {
-                        let saved = this.saveAccessData(responseObj);
-                        if (saved) {
-                            succeed(responseObj.access_token);
-                            // or: get access_token from storage
-                        }
-                    });
+                   succeed(that.getUpdatedAccesData(refreshToken));
                 } else {
                     fail("Refresh token expired");
                 }
@@ -67,6 +70,7 @@ export class KeycloakUtils {
     }
 
     public getUpdatedAccesData(refreshToken: string): Promise<any> {
+        let that = this;
         return new Promise<any>(function(succeed, fail) {
             let params: any = {
                 grant_type: "refresh_token",
@@ -87,16 +91,26 @@ export class KeycloakUtils {
                 content: data
             };
 
-            http.request(options).then(response => {
-                //this.set("tokenType", response.content.toJSON().token_type);
-                //this.set("expiresIn", response.content.toJSON().expires_in);
-                //this.accessTokenBody = response.content.toJSON();
-                succeed(response.content.toJSON());
-                //console.log(responseObj.token_type);
-            }, function(e) {
-                console.log("Error occurred: " + e);
-                fail(e);
-            });
+            succeed(http.request(options));
+
+            // http.request(options).then(response => {
+
+            //     let responseObj = response.content.toJSON();
+            //     let accessToken = responseObj.access_token;
+            //     //this.set("tokenType", response.content.toJSON().token_type);
+            //     //this.set("expiresIn", response.content.toJSON().expires_in);
+            //     //this.accessTokenBody = response.content.toJSON();
+            //     if (accessToken) {
+            //         let saved = that.saveAccessData(responseObj);
+            //         succeed(accessToken);
+            //     } else {
+            //         fail("Access token is null")
+            //     }
+            //     //console.log(responseObj.token_type);
+            // }, function(e) {
+            //     console.log("Error occurred: " + e);
+            //     fail(e);
+            // });
         });
     }
 
@@ -110,7 +124,7 @@ export class KeycloakUtils {
         let decoded: any = jwtDecode(token);
         let tokenExpirationTime = decoded.exp * 1000;
         // 5 seconds of delay
-        return tokenExpirationTime - Date.now() > 500000;
+        return tokenExpirationTime - Date.now() > 5000;
     }
 
     public openLoginPage(): void {

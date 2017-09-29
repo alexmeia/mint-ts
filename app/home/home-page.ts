@@ -45,10 +45,27 @@ export function openLoginPage() {
 
 export function getAccessToken() {
     //let keycloakUtils: KeycloakUtils = new KeycloakUtils();
-    keycloakUtils.getAccesToken().then(token => {
-        console.log("Access Token: ", token);
+    keycloakUtils.getAccesToken().then(response => {
+        let accessToken: string;
+        if (typeof response === "string") {
+            accessToken = response;
+            console.log("Access token as string: ", accessToken);
+        } else {
+            let responseObj = response.content.toJSON();
+            accessToken = responseObj.access_token;
+            console.log("Access token from response: ", accessToken);
+            if (keycloakUtils.saveAccessData(responseObj)) {
+                console.log("New access data saved in secure storage.")
+            } else {
+                console.error("Error in saving new access data in secure storage.")
+            }
+        }
     }, function (e) {
         console.log(e);
         keycloakUtils.openLoginPage();
     });
+}
+
+export function clearSecureStorage() {
+    keycloakUtils.clearSecureStorage();
 }
