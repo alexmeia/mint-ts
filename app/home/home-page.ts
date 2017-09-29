@@ -45,9 +45,10 @@ export function openLoginPage() {
 
 export function getAccessToken() {
     //let keycloakUtils: KeycloakUtils = new KeycloakUtils();
-    let accessToken: string = keycloakUtils.getAccesToken();
-    console.log("Access Token: ", accessToken);
-    if (accessToken === null) {
+    keycloakUtils.getAccesToken().then(token => {
+        console.log("Access Token: ", token);
+    }, function (e) {
+        console.log(e);
         keycloakUtils.openLoginPage();
-    }
+    });
 }
