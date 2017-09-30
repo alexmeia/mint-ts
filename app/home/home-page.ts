@@ -6,6 +6,7 @@ import * as utils from "utils/utils";
 
 import { HomeViewModel } from "./home-view-model";
 import { KeycloakUtils } from "../utils/keycloak-utils";
+import * as OidcUtils from "../utils/oidc-utils";
 import { Utils } from "../utils/utils";
 import * as Constants from "../utils/constants";
 
@@ -40,12 +41,12 @@ export function onDrawerButtonTap(args: EventData) {
 }
 
 export function openLoginPage() {
-    keycloakUtils.openLoginPage();
+    OidcUtils.openLoginPage();
 }
 
 export function getAccessToken() {
     //let keycloakUtils: KeycloakUtils = new KeycloakUtils();
-    keycloakUtils.getAccesToken().then(response => {
+    OidcUtils.getAccesToken().then(response => {
         let accessToken: string;
         if (typeof response === "string") {
             accessToken = response;
@@ -54,7 +55,7 @@ export function getAccessToken() {
             let responseObj = response.content.toJSON();
             accessToken = responseObj.access_token;
             console.log("Access token from response: ", accessToken);
-            if (keycloakUtils.saveAccessData(responseObj)) {
+            if (OidcUtils.saveAccessData(responseObj)) {
                 console.log("New access data saved in secure storage.")
             } else {
                 console.error("Error in saving new access data in secure storage.")
@@ -62,7 +63,7 @@ export function getAccessToken() {
         }
     }, function (e) {
         console.log(e);
-        keycloakUtils.openLoginPage();
+        OidcUtils.openLoginPage();
     });
 }
 

@@ -112,6 +112,10 @@ export class KeycloakUtils {
         });
     }
 
+    public updateAccessData(refreshToken: string) {
+
+    }
+
     // 1. get access token in local storage and read expiration date (jwt-decode lib needed)
     // 2.1 if expiration date < now, return the accesss token
     // 2.2 else, get the refresh token from secure storage and read expiration date
