@@ -41,8 +41,7 @@ export class KeycloakUtils {
 
     public getAccesToken(): Promise<any> {
 
-        let that = this;
-        return new Promise(function(succeed, fail) {
+        return new Promise<any>((succeed, fail) => {
 
             let secureStorage: SecureStorage = new SecureStorage();
             let accessToken: string = secureStorage.getSync({
@@ -52,16 +51,16 @@ export class KeycloakUtils {
             if (!accessToken) {
                 // new login is needed
                 fail("No token in secure storage.");
-            } else if (that.isTokenNotExpired(accessToken)) {
+            } else if (this.isTokenNotExpired(accessToken)) {
                 succeed(accessToken);
             } else {
                 let refreshToken: string = secureStorage.getSync({
                     key: "refresh_token"
                 });
-                if (that.isTokenNotExpired(refreshToken)) {
+                if (this.isTokenNotExpired(refreshToken)) {
                     // get new access token and return it
                     //let responseObj = this.getUpdatedAccesData(refreshToken);
-                   succeed(that.getUpdatedAccesData(refreshToken));
+                   succeed(this.getUpdatedAccesData(refreshToken));
                 } else {
                     fail("Refresh token expired");
                 }
@@ -70,8 +69,7 @@ export class KeycloakUtils {
     }
 
     public getUpdatedAccesData(refreshToken: string): Promise<any> {
-        let that = this;
-        return new Promise<any>(function(succeed, fail) {
+        return new Promise<any>((succeed, fail) => {
             let params: any = {
                 grant_type: "refresh_token",
                 client_id: Constants.KEYCLOAK_CLIENT_ID,
