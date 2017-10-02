@@ -10,8 +10,10 @@ import * as OidcUtils from "../utils/oidc-utils";
 import { Utils } from "../utils/utils";
 import * as Constants from "../utils/constants";
 
+import * as dialogs from "ui/dialogs";
 
-let keycloakUtils: KeycloakUtils = new KeycloakUtils(); // Does is work?
+
+let homeViewModel: HomeViewModel = new HomeViewModel();
 
 /* ***********************************************************
 * Use the "onNavigatingTo" handler to initialize the page binding context.
@@ -26,8 +28,10 @@ export function onNavigatingTo(args: NavigatedData) {
         return;
     }
 
+    homeViewModel = new HomeViewModel();
+
     const page = <Page>args.object;
-    page.bindingContext = new HomeViewModel();
+    page.bindingContext = homeViewModel;
 }
 
 /* ***********************************************************
@@ -45,28 +49,35 @@ export function openLoginPage() {
 }
 
 export function getAccessToken() {
-    //let keycloakUtils: KeycloakUtils = new KeycloakUtils();
-    OidcUtils.getAccesToken().then(response => {
-        let accessToken: string;
-        if (typeof response === "string") {
-            accessToken = response;
-            console.log("Access token as string: ", accessToken);
-        } else {
-            let responseObj = response.content.toJSON();
-            accessToken = responseObj.access_token;
-            console.log("Access token from response: ", accessToken);
-            if (OidcUtils.saveAccessData(responseObj)) {
-                console.log("New access data saved in secure storage.")
-            } else {
-                console.error("Error in saving new access data in secure storage.")
-            }
-        }
+    OidcUtils.getAccesData().then(response => {
+        let accessToken = OidcUtils.getAccessToken(response);
+        console.log(accessToken);
+        homeViewModel.set("accessToken", accessToken);
+        homeViewModel.set("getAccessTokenOutcome", "Very good");
     }, function (e) {
         console.log(e);
         OidcUtils.openLoginPage();
     });
 }
 
+export function logout() {
+    // OidcUtils.logout().then((response) => {
+    //     if (response.statusCode < 400) {
+    //         dialogs.alert({
+    //             message: "Logout eseguito correttamente.",
+    //             okButtonText: "OK"
+    //         });
+    //     }
+    //     else {
+    //         dialogs.alert("Response code: " + response.statusCode)
+    //     }
+    // }, function(e) {
+    //     dialogs.alert("Sessione utente terminata.");
+    // });
+    OidcUtils.openLogoutPage();
+
+}
+
 export function clearSecureStorage() {
-    keycloakUtils.clearSecureStorage();
+    OidcUtils.clearSecureStorage();
 }

@@ -25,7 +25,7 @@ export function saveAccessData(accessData: any): boolean {
 }
 
 export function clearSecureStorage() {
-    this.secureStorage.removeAll().then(removed => {
+    secureStorage.removeAll().then(removed => {
         if (removed) {
             console.log("Removed all data from secure storage.")
         } else {
@@ -34,7 +34,7 @@ export function clearSecureStorage() {
     });
 }
 
-export function getAccesToken(): Promise<any> {
+export function getAccesData(): Promise<any> {
 
     return new Promise<any>((succeed, fail) => {
 
@@ -46,13 +46,13 @@ export function getAccesToken(): Promise<any> {
         if (!accessToken) {
             // new login is needed
             fail("No token in secure storage.");
-        } else if (isTokenNotExpired(accessToken)) {
+        } else if (!isTokenExpired(accessToken)) {
             succeed(accessToken);
         } else {
             let refreshToken: string = secureStorage.getSync({
                 key: "refresh_token"
             });
-            if (isTokenNotExpired(refreshToken)) {
+            if (!isTokenExpired(refreshToken)) {
                 succeed(getUpdatedAccesData(refreshToken));
             } else {
                 fail("Refresh token expired");
@@ -87,6 +87,53 @@ function getUpdatedAccesData(refreshToken: string): Promise<any> {
     });
 }
 
+export function getAccessToken(response: any) {
+    let accessToken: string;
+    if (typeof response === "string") {
+        accessToken = response;
+    } else {
+        let responseObj = response.content.toJSON();
+        accessToken = responseObj.access_token;
+        if (accessToken) {
+            console.log("Access token from response: ", accessToken);
+            if (saveAccessData(responseObj)) {
+                console.log("New access data saved in secure storage.")
+            } else {
+                console.error("Error in saving new access data in secure storage.")
+            }
+        }
+        else {
+            openLoginPage();
+        }
+    }
+    return accessToken;
+}
+
+export function logout(): Promise<http.HttpResponse> {
+    return new Promise<any>((succeed, fail) => {
+        let refreshToken: string = secureStorage.getSync({
+            key: "refresh_token"
+        });
+
+        if (isTokenExpired(refreshToken)) {
+            fail("Session already expired.")
+        }
+
+        let options = {
+            method: "POST",
+            url: Constants.KEYCLOAK_LOGOUT_URL,
+            headers: {
+                "content-type": "application/x-www-form-urlencoded"
+            }, // Keycloak needs this content type
+            client_id: Constants.KEYCLOAK_CLIENT_ID,
+            refresh_token: refreshToken,
+            client_secret: Constants.KEYCLOAK_CLIENT_SECRET
+        };
+
+        succeed(http.request(options));
+    })
+}
+
 export function updateAccessData(refreshToken: string) {
 
 }
@@ -97,11 +144,11 @@ export function updateAccessData(refreshToken: string) {
 // 3.1 if refresh token expiration date < now, get access token with refresh token, saveAccessData and return access token
 // 3.2 else return null or open login page (what is better? may be return null)
 
-export function isTokenNotExpired(token: string): boolean {
+export function isTokenExpired(token: string): boolean {
     let decoded: any = jwtDecode(token);
     let tokenExpirationTime = decoded.exp * 1000;
     // 5 seconds of delay
-    return tokenExpirationTime - Date.now() > 5000;
+    return tokenExpirationTime - Date.now() < 5000;
 }
 
 export function openLoginPage(): void {
@@ -110,7 +157,7 @@ export function openLoginPage(): void {
     let nonce = Utils.guid();
     // Is necessary to store state and nonce values?
 
-    let oidcParams = {
+    let loginParams = {
         client_id: Constants.KEYCLOAK_CLIENT_ID,
         redirect_uri: Constants.KEYCLOAK_REDIRECT_URL,
         response_type: "code",
@@ -118,7 +165,14 @@ export function openLoginPage(): void {
         state: state,
         nonce: nonce
     };
-    utils.openUrl(authority + "?" + Utils.buildQueryString(oidcParams));
+    utils.openUrl(authority + "?" + Utils.buildQueryString(loginParams));
+}
+
+export function openLogoutPage(): void {
+    let logoutParams = {
+        redirect_uri: Constants.KEYCLOAK_REDIRECT_URL_LOGOUT
+    }
+    utils.openUrl(Constants.KEYCLOAK_LOGOUT_URL + "?" + Utils.buildQueryString(logoutParams));
 }
 
 // Build the complete url to open keycloak login page
