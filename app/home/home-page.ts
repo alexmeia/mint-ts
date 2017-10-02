@@ -10,6 +10,8 @@ import * as OidcUtils from "../utils/oidc-utils";
 import { Utils } from "../utils/utils";
 import * as Constants from "../utils/constants";
 
+import * as dialogs from "ui/dialogs";
+
 
 let keycloakUtils: KeycloakUtils = new KeycloakUtils(); // Does is work?
 
@@ -54,11 +56,16 @@ export function getAccessToken() {
         } else {
             let responseObj = response.content.toJSON();
             accessToken = responseObj.access_token;
-            console.log("Access token from response: ", accessToken);
-            if (OidcUtils.saveAccessData(responseObj)) {
-                console.log("New access data saved in secure storage.")
-            } else {
-                console.error("Error in saving new access data in secure storage.")
+            if (accessToken) {
+                console.log("Access token from response: ", accessToken);
+                if (OidcUtils.saveAccessData(responseObj)) {
+                    console.log("New access data saved in secure storage.")
+                } else {
+                    console.error("Error in saving new access data in secure storage.")
+                }
+            }
+            else {
+                OidcUtils.openLoginPage();
             }
         }
     }, function (e) {
@@ -67,6 +74,24 @@ export function getAccessToken() {
     });
 }
 
+export function logout() {
+    // OidcUtils.logout().then((response) => {
+    //     if (response.statusCode < 400) {
+    //         dialogs.alert({
+    //             message: "Logout eseguito correttamente.",
+    //             okButtonText: "OK"
+    //         });
+    //     }
+    //     else {
+    //         dialogs.alert("Response code: " + response.statusCode)
+    //     }
+    // }, function(e) {
+    //     dialogs.alert("Sessione utente terminata.");
+    // });
+    OidcUtils.openLogoutPage();
+
+}
+
 export function clearSecureStorage() {
-    keycloakUtils.clearSecureStorage();
+    OidcUtils.clearSecureStorage();
 }

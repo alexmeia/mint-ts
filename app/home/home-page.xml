@@ -62,6 +62,7 @@
                 <Button class="btn btn-primary" text="Login with OpenId Connect" tap="openLoginPage" />
                 <Button class="btn btn-primary" text="Get access token" tap="getAccessToken" />
                 <Button class="btn btn-primary" text="Clear secure storage" tap="clearSecureStorage" />
+                <Button class="btn btn-outline" text="Logout" tap="logout" />
                 <Label text="{{ 'Test: ' + testUrl }}" textWrap="false" />
                 <Label text="{{ 'Access token type: ' + tokenType }}" textWrap="true" />
                 <Label text="{{ 'Expires in: ' + expiresIn }}" textWrap="true" />
