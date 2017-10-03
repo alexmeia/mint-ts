@@ -93,8 +93,6 @@ export class HomeViewModel extends Observable {
                 secureStorage.removeAll();
                 dialogs.alert("Logout effettuato.");
             }
-            
-
         });
 
         // Does secure storage work?
