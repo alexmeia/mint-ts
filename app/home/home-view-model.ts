@@ -88,27 +88,27 @@ export class HomeViewModel extends Observable {
                     console.log("Error occurred: " + e);
                 });
             }
-            else if(logout) {
+            else if (logout) {
                 //logout
                 secureStorage.removeAll();
                 dialogs.alert("Logout effettuato.");
             }
+            
+
+            // Does secure storage work?
+            secureStorage.get({
+                key: "token_type"
+            }).then(tokenType => this.set("tokenType", tokenType));
+
+            secureStorage.get({
+                key: "access_token"
+            }).then(accessToken => this.set("accessToken", accessToken));
+
+            secureStorage.get({
+                key: "refresh_token"
+            }).then(refreshToken => console.log("refresh_token: ", refreshToken));
+
         });
-
-        // Does secure storage work?
-        secureStorage.get({
-            key: "token_type"
-        }).then(tokenType => this.set("tokenType", tokenType));
-
-        secureStorage.get({
-            key: "access_token"
-        }).then(accessToken => this.set("accessToken", accessToken));
-
-        secureStorage.get({
-            key: "refresh_token"
-        }).then(refreshToken => console.log("refresh_token: ", refreshToken));
-
-        
 
     }
 

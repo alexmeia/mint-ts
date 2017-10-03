@@ -13,7 +13,7 @@ import * as Constants from "../utils/constants";
 import * as dialogs from "ui/dialogs";
 
 
-let keycloakUtils: KeycloakUtils = new KeycloakUtils(); // Does is work?
+let homeViewModel: HomeViewModel = new HomeViewModel();
 
 /* ***********************************************************
 * Use the "onNavigatingTo" handler to initialize the page binding context.
@@ -28,8 +28,10 @@ export function onNavigatingTo(args: NavigatedData) {
         return;
     }
 
+    homeViewModel = new HomeViewModel();
+
     const page = <Page>args.object;
-    page.bindingContext = new HomeViewModel();
+    page.bindingContext = homeViewModel;
 }
 
 /* ***********************************************************
@@ -47,27 +49,11 @@ export function openLoginPage() {
 }
 
 export function getAccessToken() {
-    //let keycloakUtils: KeycloakUtils = new KeycloakUtils();
-    OidcUtils.getAccesToken().then(response => {
-        let accessToken: string;
-        if (typeof response === "string") {
-            accessToken = response;
-            console.log("Access token as string: ", accessToken);
-        } else {
-            let responseObj = response.content.toJSON();
-            accessToken = responseObj.access_token;
-            if (accessToken) {
-                console.log("Access token from response: ", accessToken);
-                if (OidcUtils.saveAccessData(responseObj)) {
-                    console.log("New access data saved in secure storage.")
-                } else {
-                    console.error("Error in saving new access data in secure storage.")
-                }
-            }
-            else {
-                OidcUtils.openLoginPage();
-            }
-        }
+    OidcUtils.getAccesData().then(response => {
+        let accessToken = OidcUtils.getAccessToken(response);
+        console.log(accessToken);
+        homeViewModel.set("accessToken", accessToken);
+        homeViewModel.set("getAccessTokenOutcome", "Very good");
     }, function (e) {
         console.log(e);
         OidcUtils.openLoginPage();

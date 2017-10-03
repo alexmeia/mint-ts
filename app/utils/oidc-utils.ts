@@ -34,7 +34,7 @@ export function clearSecureStorage() {
     });
 }
 
-export function getAccesToken(): Promise<any> {
+export function getAccesData(): Promise<any> {
 
     return new Promise<any>((succeed, fail) => {
 
@@ -85,6 +85,28 @@ function getUpdatedAccesData(refreshToken: string): Promise<any> {
         succeed(http.request(options));
 
     });
+}
+
+export function getAccessToken(response: any) {
+    let accessToken: string;
+    if (typeof response === "string") {
+        accessToken = response;
+    } else {
+        let responseObj = response.content.toJSON();
+        accessToken = responseObj.access_token;
+        if (accessToken) {
+            console.log("Access token from response: ", accessToken);
+            if (saveAccessData(responseObj)) {
+                console.log("New access data saved in secure storage.")
+            } else {
+                console.error("Error in saving new access data in secure storage.")
+            }
+        }
+        else {
+            openLoginPage();
+        }
+    }
+    return accessToken;
 }
 
 export function logout(): Promise<http.HttpResponse> {
